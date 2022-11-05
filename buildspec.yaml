@@ -24,7 +24,9 @@ phases:
     - echo pushing to repo
     - docker push ${REPOSITORY_URI}:latest
     - echo Writing image definitions file. . .
-    - printf '[{"name": "dummy_service", "imageUri":"%s"}]' ${REPOSITORY_URI}:latest > imagedefinitions.json 
+    - printf '[{"name":"dummy_service","imageUri":"%s"}]' ${REPOSITORY_URI}:latest >
+imagedefinitions.json
+    #- printf '[{"name": "dummy_service", "imageUri":"%s"}]' ${REPOSITORY_URI}:latest > imagedefinitions.json 
 artifacts:
   files:
   - imagedefinitions.json
