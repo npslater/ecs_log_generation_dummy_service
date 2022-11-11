@@ -25,46 +25,39 @@ app.logger.setLevel('DEBUG')
 
 @app.route("/")
 def default():
-    return {'status': 'alive'}, 200, {'ContentType': 'application/json'}
+    return healthcheck()
 
-@app.route("/dummy")
-def dummy():
+@app.route("/healthcheck")
+def healthcheck():
     payload = {
         'message': 'test'
     }
     app.logger.debug(payload)
     return payload, 200, {'ContentType': 'application/json'}
 
-@app.route("/badrequest", methods=['GET','POST'])
-def badrequest():
+@app.route("/item/save", methods=['GET','POST'])
+def save():
     app.logger.error(json.loads(request.data))
     fl.abort(400)
 
-@app.route("/nopermission", methods=['GET','POST'])
-def nopermission():
+@app.route("/settings/profile", methods=['GET','POST'])
+def settings():
     app.logger.error(json.loads(request.data))
     fl.abort(403)
 
-@app.route("/internalerror", methods=['GET','POST'])
-def internalerror():
+@app.route("/item/update", methods=['GET','POST'])
+def update():
     app.logger.error(json.loads(request.data))
     fl.abort(500)
 
-@app.route("/copycat", methods=['POST'])
+@app.route("/record/save", methods=['POST'])
 def copycat():
     if not request.data:
-        badrequest();
+        save();
     payload = json.loads(request.data)
-    payload['newKey'] = 'copycat added this key'
+    payload['newKey'] = 'added this key'
     app.logger.info(payload)
     return payload, 200, {'ContentType': 'application/json'}
-
-@app.route("/status/<code>")
-def status(code):
-    statusCode = int(code)
-    app.logger.info(statusCode)
-    if code != 200:
-        fl.abort(statusCode)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 80))
