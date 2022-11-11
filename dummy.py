@@ -36,24 +36,22 @@ def healthcheck():
     return payload, 200, {'ContentType': 'application/json'}
 
 @app.route("/item/save", methods=['GET','POST'])
-def save():
+def save_item():
     app.logger.info(json.loads(request.data))
-    return "Malformed request", 400
+    return {"error": "Malformed Request"}, 400, {'ContentType': 'application/json'}
 
 @app.route("/settings/profile", methods=['GET','POST'])
 def settings():
     app.logger.error(json.loads(request.data))
-    return "Access Denied", 403
+    return {"error": "Access Denied"}, 403, {'ContentType': 'application/json'}
 
-@app.route("/item/update", methods=['GET','POST'])
+@app.route("/item/update", methods=['POST'])
 def update():
     app.logger.error(json.loads(request.data))
-    return "Server Error", 500
+    return {"error": "Internal Server Error"}, 500, {'ContentType': 'application/json'}
 
 @app.route("/record/save", methods=['POST'])
-def copycat():
-    if not request.data:
-        save();
+def save_record():
     payload = json.loads(request.data)
     payload['newKey'] = 'added this key'
     app.logger.info(payload)
