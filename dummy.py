@@ -1,6 +1,5 @@
 import json
 from flask import Flask, request
-import flask as fl
 import os
 import logging
 from logging.config import dictConfig
@@ -39,17 +38,17 @@ def healthcheck():
 @app.route("/item/save", methods=['GET','POST'])
 def save():
     app.logger.info(json.loads(request.data))
-    fl.abort(400)
+    return "Malformed request", 400
 
 @app.route("/settings/profile", methods=['GET','POST'])
 def settings():
     app.logger.error(json.loads(request.data))
-    fl.abort(403)
+    return "Access Denied", 403
 
 @app.route("/item/update", methods=['GET','POST'])
 def update():
     app.logger.error(json.loads(request.data))
-    fl.abort(500)
+    return "Server Error", 500
 
 @app.route("/record/save", methods=['POST'])
 def copycat():
