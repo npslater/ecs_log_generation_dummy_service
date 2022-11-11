@@ -2,9 +2,25 @@ import json
 from flask import Flask, request
 import flask as fl
 import os
+from logging.config import dictConfig
 
 app = Flask(__name__)
-app.logger.setLevel('DEBUG')
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 @app.route("/")
 def default():
@@ -20,7 +36,7 @@ def healthcheck():
 
 @app.route("/item/save", methods=['GET','POST'])
 def save():
-    app.logger.error(json.loads(request.data))
+    app.logger.info(json.loads(request.data))
     fl.abort(400)
 
 @app.route("/settings/profile", methods=['GET','POST'])
