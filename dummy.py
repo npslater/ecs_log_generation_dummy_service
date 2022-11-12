@@ -4,7 +4,7 @@ import os
 import logging
 from waitress import serve
 from paste.translogger import TransLogger
-
+import uuid
 
 logger = logging.getLogger("waitress")
 logger.setLevel(logging.INFO)
@@ -42,8 +42,10 @@ def update():
 @app.route("/record/save", methods=['POST'])
 def save_record():
     payload = json.loads(request.data)
-    payload['newKey'] = 'added this key'
     logger.info(payload)
+    if not "expiry" in payload:
+        return {"error": "Unauthorized"}, 401, {"ContentType": "application/json"}
+    payload["transactionId"] = uuid.uuid4().hex
     return payload, 200, {'ContentType': 'application/json'}
 
 if __name__ == "__main__":
