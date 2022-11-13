@@ -42,10 +42,11 @@ def update():
 @app.route("/record/save", methods=['POST'])
 def save_record():
     payload = json.loads(request.data)
-    logger.info(payload)
     if not "expiry" in payload:
+        logger.error(payload)
         return {"error": "Unauthorized"}, 401, {"ContentType": "application/json"}
     payload["transactionId"] = uuid.uuid4().hex
+    logger.info(payload)
     return payload, 200, {'ContentType': 'application/json'}
 
 if __name__ == "__main__":
