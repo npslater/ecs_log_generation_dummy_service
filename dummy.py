@@ -43,7 +43,7 @@ def update():
 def save_record():
     payload = json.loads(request.data)
     if not "expiry" in payload:
-        logger.error(payload)
+        logger.error("expiry field missing: {}".format(payload))
         return {"error": "Unauthorized"}, 401, {"ContentType": "application/json"}
     payload["transactionId"] = uuid.uuid4().hex
     logger.info(payload)
