@@ -5,6 +5,7 @@ import logging
 from waitress import serve
 from paste.translogger import TransLogger
 import uuid
+import random
 
 logger = logging.getLogger("waitress")
 logger.setLevel(logging.INFO)
@@ -48,6 +49,20 @@ def save_record():
     payload["transactionId"] = uuid.uuid4().hex
     logger.info(payload)
     return payload, 200, {'ContentType': 'application/json'}
+
+@app.route("/ingest", methods=["POST"])
+def ingest():
+    payload = json.loads(request.data);
+    numThreads = 0
+    if not "numThreads" in payload:
+        numThreads = 1
+    else:
+        numThreads = payload["numThreads"]
+    runningThreads = random.randint(10,100)
+    logger.info("Launching {} new threads. {} total threads running".format(numThreads, runningThreads))
+    payload["runningThreads"] = runningThreads
+    return payload, 200, {"ContentType": "application/json"}
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 80))
